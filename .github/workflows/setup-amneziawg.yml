@@ -1,0 +1,40 @@
+name: Build amneziawg-kmod source archive
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+          contents: write 
+
+    steps:
+      - name: Parse version and release
+        id: version
+        run: |
+          TAG=${GITHUB_REF_NAME#v}
+          UPSTREAM=${TAG%-*}
+          RELEASE=${TAG##*-}
+          echo "upstream=$UPSTREAM" >> $GITHUB_OUTPUT
+          echo "release=$RELEASE" >> $GITHUB_OUTPUT
+
+      - name: Download upstream source
+        run: |
+          wget -O source.tar.gz \
+            "https://github.com/amnezia-vpn/amneziawg-linux-kernel-module/archive/refs/tags/v${{ steps.version.outputs.upstream }}.tar.gz"
+
+      - name: Extract and repack
+        run: |
+          tar -xzf source.tar.gz
+
+          mkdir amneziawg-kmod
+          cp -r amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/src/* amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/COPYING amneziawg-kmod/
+
+          tar -czvf amneziawg-kmod.tar.gz amneziawg-kmod
+
+      - name: Upload to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: amneziawg-kmod.tar.gz
