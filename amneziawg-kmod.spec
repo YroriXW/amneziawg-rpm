@@ -12,6 +12,7 @@ Source0:        https://github.com/YroriXW/amneziawg/releases/download/v%{versio
 
 Patch0:			https://github.com/babiulep/my-kernel-patches/raw/refs/heads/main/AMNEZIAWG/blake2s.patch
 Patch1:			https://github.com/YroriXW/amneziawg/raw/refs/heads/main/fixmemleakinjpspecsetup.patch
+Patch2:			https://github.com/YroriXW/amneziawg/raw/refs/heads/main/fixversion.patch
 
 BuildRequires:  make
 BuildRequires:  kmodtool
@@ -50,6 +51,9 @@ fi
 
 echo "Applying memory leak fix for jp_spec_setup"
 patch -p1 < %{PATCH1}
+
+echo "Applying version string fix"
+patch -p1 < %{PATCH2}
 
 popd
 
