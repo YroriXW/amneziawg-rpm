@@ -82,6 +82,6 @@ fi
 
 %changelog
 * Sun Mar 1 2026 Oleg YroriXW <olegyrori@gmail.com> - 1.0.20260210-2
-- Added patch for memory leak, blake2s
+- Added patch for memory leak, blake2s, version string
 * Sat Feb 28 2026 Oleg YroriXW <olegyrori@gmail.com> - 1.0.20260210-1
 - Initial build
