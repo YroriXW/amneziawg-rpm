@@ -91,6 +91,8 @@ jobs:
           Vcs-Browser: https://github.com/YroriXW/amneziawg
           Build-Depends: debhelper-compat (= 13), dh-dkms, dkms
           Standards-Version: 4.7.2
+          Package-List:
+            amneziawg-dkms deb kernel optional arch=all    
           Homepage: https://amnezia.org
           
           Files:
@@ -104,10 +106,10 @@ jobs:
           SHA256=$(sha256sum amneziawg-tools.tar.gz | cut -d ' ' -f1)
           SIZE=$(wc -c < amneziawg-tools.tar.gz)
 
-          cat > amneziawg-tools.dsc << EOF
+          cat > amneziawg.dsc << EOF
           Format: 3.0 (native)
           Source: amneziawg
-          Binary: amneziawg, amneziawg-tools
+          Binary: amneziawg
           Version: ${{ steps.version.outputs.upstream_tools }}
           Maintainer: Oleg YroriXW <olegyrori@gmail.com>
           Architecture: all
@@ -115,6 +117,30 @@ jobs:
           Vcs-Browser: https://github.com/amnezia-vpn/amnezia-wg-tools
           Build-Depends: debhelper-compat (= 13), pkg-config, systemd
           Standards-Version: 4.7.2
+          Package-List:
+            amneziawg deb net optional arch=all
+          Homepage: https://amnezia.org
+          
+          Files:
+           ${MD5} ${SIZE} amneziawg-tools.tar.gz
+          
+          Checksums-Sha256:
+           ${SHA256} ${SIZE} amneziawg-tools.tar.gz
+          EOF
+
+          cat > amneziawg-tools.dsc << EOF
+          Format: 3.0 (native)
+          Source: amneziawg
+          Binary: amneziawg-tools
+          Version: ${{ steps.version.outputs.upstream_tools }}
+          Maintainer: Oleg YroriXW <olegyrori@gmail.com>
+          Architecture: all
+          Vcs-Git: https://github.com/amnezia-vpn/amnezia-wg-tools.git
+          Vcs-Browser: https://github.com/amnezia-vpn/amnezia-wg-tools
+          Build-Depends: debhelper-compat (= 13), pkg-config, systemd
+          Standards-Version: 4.7.2
+          Package-List:
+            amneziawg-tools deb net optional arch=all
           Homepage: https://amnezia.org
           
           Files:
