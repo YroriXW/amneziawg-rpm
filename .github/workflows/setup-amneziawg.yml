@@ -64,7 +64,7 @@ jobs:
 
           mkdir amneziawg-linux-kmod_${{ steps.version.outputs.upstream }}
           rm -rf amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/debian/patches       
-          cp -r amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/src/* amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/COPYING blake2s.patch amneziawg-linux-kmod_${{ steps.version.outputs.upstream }}/
+          cp -r amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/src/* amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/COPYING blake2s.patch pre-build.sh amneziawg-linux-kmod_${{ steps.version.outputs.upstream }}/
           tar -czvf amneziawg-linux-kmod_${{ steps.version.outputs.upstream }}.orig.tar.gz amneziawg-linux-kmod_${{ steps.version.outputs.upstream }}
           tar -czvf amneziawg-kmod.tar.gz amneziawg-linux-kmod_${{ steps.version.outputs.upstream }}
           cd amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}
