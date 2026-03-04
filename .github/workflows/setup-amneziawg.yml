@@ -63,7 +63,7 @@ jobs:
           cd amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }} && export QUILT_PATCHES=debian/patches && quilt push -a && rm -rf .pc && rm -rf debian/patches && unset QUILT_PATCHES && cd ../
 
           mkdir amneziawg-unified
-          cp -r amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/src/* amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/COPYING blake2s.patch amneziawg-unified/
+          cp -r amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/src/* amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/COPYING amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/debian blake2s.patch amneziawg-unified/
           tar -czvf amneziawg-unified.tar.gz amneziawg-unified
 
           cp -r fixversiontools.patch debian_awgtools/patches/
@@ -71,7 +71,7 @@ jobs:
           cd amneziawg-tools-${{ steps.version.outputs.upstream_tools }} && export QUILT_PATCHES=debian/patches && quilt push -a && rm -rf .pc && rm -rf debian_awgtools/patches && unset QUILT_PATCHES && cd ../
           
           mkdir amneziawg-tools
-          cp -r amneziawg-tools-${{ steps.version.outputs.upstream_tools }}/src amneziawg-tools-${{ steps.version.outputs.upstream_tools }}/contrib amneziawg-tools-${{ steps.version.outputs.upstream_tools }}/COPYING amneziawg-tools/
+          cp -r amneziawg-tools-${{ steps.version.outputs.upstream_tools }}/src amneziawg-tools-${{ steps.version.outputs.upstream_tools }}/contrib amneziawg-tools-${{ steps.version.outputs.upstream_tools }}/COPYING amneziawg-tools-${{ steps.version.outputs.upstream_tools }}/debian amneziawg-tools/
           tar -czvf amneziawg-tools.tar.gz amneziawg-tools
 
           MD5=$(md5sum amneziawg-unified.tar.gz | cut -d ' ' -f1)
