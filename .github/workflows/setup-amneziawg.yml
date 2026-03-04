@@ -41,6 +41,8 @@ jobs:
         run: |
           tar -xzf source.tar.gz
           tar -xzf source-tools.tar.gz
+          rm -rf amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/debian
+          rm -rf amneziawg-tools-${{ steps.version.outputs.upstream_tools }}/debian
 
           cd amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/src
           rm -rf dkms.conf
@@ -55,18 +57,21 @@ jobs:
           EOF
           cd ../../
 
-          cp -r blake2sintegrationMakefile.patch fixmemleakinjpspecsetup.patch fixversionkernel.patch debian/patches/
+          
+          cp -r blake2sintegrationMakefile.patch fixmemleakinjpspecsetup.patch fixversionkernel.patch debian/patches
+          cp -r debian amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/
           cd amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }} && export QUILT_PATCHES=debian/patches && quilt push -a && rm -rf .pc && rm -rf debian/patches && cd ../
 
           mkdir amneziawg-unified
-          cp -r amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/src/* amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/COPYING blake2s.patch debian amneziawg-unified/
+          cp -r amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/src/* amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/COPYING blake2s.patch amneziawg-unified/
           tar -czvf amneziawg-unified.tar.gz amneziawg-unified
 
           cp -r fixversiontools.patch debian_awgtools/patches/
+          cp -r debian_awgtools amneziawg-tools-${{ steps.version.outputs.upstream_tools }}/
           cd amneziawg-tools-${{ steps.version.outputs.upstream_tools }} && export QUILT_PATCHES=debian/patches && quilt push -a && rm -rf .pc && rm -rf debian_awgtools/patches && cd ../
-
+          
           mkdir amneziawg-tools
-          cp -r amneziawg-tools-${{ steps.version.outputs.upstream_tools }}/src amneziawg-tools-${{ steps.version.outputs.upstream_tools }}/contrib amneziawg-tools-${{ steps.version.outputs.upstream_tools }}/COPYING debian_awgtools amneziawg-tools/
+          cp -r amneziawg-tools-${{ steps.version.outputs.upstream_tools }}/src amneziawg-tools-${{ steps.version.outputs.upstream_tools }}/contrib amneziawg-tools-${{ steps.version.outputs.upstream_tools }}/COPYING amneziawg-tools/
           tar -czvf amneziawg-tools.tar.gz amneziawg-tools
 
           MD5=$(md5sum amneziawg-unified.tar.gz | cut -d ' ' -f1)
