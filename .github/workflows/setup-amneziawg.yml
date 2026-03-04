@@ -94,10 +94,8 @@ jobs:
           Package-List:
             amneziawg-dkms deb kernel optional arch=all    
           Homepage: https://amnezia.org
-          
           Files:
            ${MD5} ${SIZE} amneziawg-unified.tar.gz
-          
           Checksums-Sha256:
            ${SHA256} ${SIZE} amneziawg-unified.tar.gz
           EOF
@@ -120,10 +118,8 @@ jobs:
           Package-List:
             amneziawg deb net optional arch=all
           Homepage: https://amnezia.org
-          
           Files:
            ${MD5} ${SIZE} amneziawg-tools.tar.gz
-          
           Checksums-Sha256:
            ${SHA256} ${SIZE} amneziawg-tools.tar.gz
           EOF
@@ -141,11 +137,9 @@ jobs:
           Standards-Version: 4.7.2
           Package-List:
             amneziawg-tools deb net optional arch=all
-          Homepage: https://amnezia.org
-          
+          Homepage: https://amnezia.org          
           Files:
            ${MD5} ${SIZE} amneziawg-tools.tar.gz
-          
           Checksums-Sha256:
            ${SHA256} ${SIZE} amneziawg-tools.tar.gz
           EOF
