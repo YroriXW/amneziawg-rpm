@@ -69,9 +69,60 @@ jobs:
           cp -r amneziawg-tools-${{ steps.version.outputs.upstream_tools }}/src amneziawg-tools-${{ steps.version.outputs.upstream_tools }}/contrib amneziawg-tools-${{ steps.version.outputs.upstream_tools }}/COPYING debian_awgtools amneziawg-tools/
           tar -czvf amneziawg-tools.tar.gz amneziawg-tools
 
+          MD5=$(md5sum amneziawg-unified.tar.gz | cut -d ' ' -f1)
+          SHA256=$(sha256sum amneziawg-unified.tar.gz | cut -d ' ' -f1)
+          SIZE=$(wc -c < amneziawg-unified.tar.gz)
+
+          cat > amneziawg-linux-kmod.dsc << EOF
+          Format: 3.0 (native)
+          Source: amneziawg-linux-kmod
+          Version: ${{ steps.version.outputs.upstream }}
+          Maintainer: Oleg YroriXW <olegyrori@gmail.com>
+          Architecture: all
+          Vcs-Git: https://github.com/YroriXW/amneziawg.git
+          Vcs-Browser: https://github.com/YroriXW/amneziawg
+          Build-Depends: debhelper-compat (= 13), dh-dkms, dkms
+          Standards-Version: 4.7.2
+          Homepage: https://amnezia.org
+          
+          Files:
+           ${MD5} ${SIZE} amneziawg-unified.tar.gz
+          
+          Checksums-Sha256:
+           ${SHA256} ${SIZE} amneziawg-unified.tar.gz
+          EOF
+
+          MD5=$(md5sum amneziawg-tools.tar.gz | cut -d ' ' -f1)
+          SHA256=$(sha256sum amneziawg-tools.tar.gz | cut -d ' ' -f1)
+          SIZE=$(wc -c < amneziawg-tools.tar.gz)
+
+          cat > amneziawg.dsc << EOF
+          Format: 3.0 (native)
+          Source: amneziawg
+          Binary: amneziawg, amneziawg-tools
+          Version: ${{ steps.version.outputs.upstream_tools }}
+          Maintainer: Oleg YroriXW <olegyrori@gmail.com>
+          Architecture: all
+          Vcs-Git: https://github.com/amnezia-vpn/amnezia-wg-tools.git
+          Vcs-Browser: https://github.com/amnezia-vpn/amnezia-wg-tools
+          Build-Depends: debhelper-compat (= 13), pkg-config, systemd
+          Standards-Version: 4.7.2
+          Homepage: https://amnezia.org
+          
+          Files:
+           ${MD5} ${SIZE} amneziawg-tools.tar.gz
+          
+          Checksums-Sha256:
+           ${SHA256} ${SIZE} amneziawg-tools.tar.gz
+          EOF
+
+          
+
       - name: Upload to release
         uses: softprops/action-gh-release@v2
         with:
           files: |
             amneziawg-unified.tar.gz
             amneziawg-tools.tar.gz
+            amneziawg-linux-kmod.dsc
+            amneziawg.dsc
