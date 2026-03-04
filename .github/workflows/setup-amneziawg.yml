@@ -116,12 +116,12 @@ jobs:
            ${SHA256debian} ${SIZEdebian} amneziawg-linux-kmod_${{ steps.version.outputs.upstream }}-${{ steps.version.outputs.release }}.debian.tar.gz
           EOF
 
-          MD5orig=$(md5sum amneziawg_${{ steps.version.outputs.upstream_tools }}.tar.gz | cut -d ' ' -f1)
-          MD5debian=$(md5sum amneziawg_${{ steps.version.outputs.upstream_tools }}.tar.gz | cut -d ' ' -f1)
-          SHA256orig=$(sha256sum amneziawg_${{ steps.version.outputs.upstream_tools }}.tar.gz | cut -d ' ' -f1)
-          SHA256debian=$(sha256sum amneziawg_${{ steps.version.outputs.upstream_tools }}.tar.gz | cut -d ' ' -f1)
-          SIZEorig=$(wc -c < amneziawg_${{ steps.version.outputs.upstream_tools }}.tar.gz)
-          SIZEdebian=$(wc -c < amneziawg_${{ steps.version.outputs.upstream_tools }}.tar.gz)
+          MD5orig=$(md5sum amneziawg_${{ steps.version.outputs.upstream_tools }}.orig.tar.gz | cut -d ' ' -f1)
+          MD5debian=$(md5sum amneziawg_${{ steps.version.outputs.upstream_tools }}-${{ steps.version.outputs.release }}.debian.tar.gz | cut -d ' ' -f1)
+          SHA256orig=$(sha256sum amneziawg_${{ steps.version.outputs.upstream_tools }}.orig.tar.gz | cut -d ' ' -f1)
+          SHA256debian=$(sha256sum amneziawg_${{ steps.version.outputs.upstream_tools }}-${{ steps.version.outputs.release }}.debian.tar.gz | cut -d ' ' -f1)
+          SIZEorig=$(wc -c < amneziawg_${{ steps.version.outputs.upstream_tools }}.orig.tar.gz)
+          SIZEdebian=$(wc -c < amneziawg_${{ steps.version.outputs.upstream_tools }}-${{ steps.version.outputs.release }}.debian.tar.gz)
 
           cat > amneziawg.dsc << EOF
           Format: 3.0 (quilt)
