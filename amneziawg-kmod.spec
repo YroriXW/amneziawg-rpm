@@ -34,7 +34,7 @@ kmodtool --target %{_target_cpu} --kmodname %{name} %{?buildforkernels:--%{build
 
 %autosetup -c -N
 
-pushd %{name}
+pushd amneziawg-unified
 
 kver=%{?kernel_versions}
 kver=${kver%%___*}
@@ -48,7 +48,7 @@ fi
 popd
 
 for kernel_version in %{?kernel_versions} ; do
-    cp -a %{name} _kmod_build_${kernel_version%%___*}
+    cp -a amneziawg-unified _kmod_build_${kernel_version%%___*}
 done
 
 %build
