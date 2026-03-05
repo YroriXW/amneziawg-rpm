@@ -62,9 +62,10 @@ jobs:
           cp -r debian amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/
           cd amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }} && export QUILT_PATCHES=debian/patches && quilt push -a && rm -rf .pc && cd ../
 
-          mkdir amneziawg-linux-kmod_${{ steps.version.outputs.upstream }}
+          mkdir -p amneziawg-linux-kmod_${{ steps.version.outputs.upstream }}/patches
           rm -rf amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/debian/patches       
-          cp -r amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/src/* amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/COPYING blake2s.patch pre-build.sh amneziawg-linux-kmod_${{ steps.version.outputs.upstream }}/
+          cp -r amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/src/* amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/COPYING pre-build.sh amneziawg-linux-kmod_${{ steps.version.outputs.upstream }}/
+          cp -r blake2s.patch amneziawg-linux-kmod_${{ steps.version.outputs.upstream }}/patches/
           tar -czvf amneziawg-linux-kmod_${{ steps.version.outputs.upstream }}.orig.tar.gz amneziawg-linux-kmod_${{ steps.version.outputs.upstream }}
           cp -r amneziawg-linux-kmod_${{ steps.version.outputs.upstream }} amneziawg-kmod
           tar -czvf amneziawg-kmod.tar.gz amneziawg-kmod
