@@ -43,7 +43,7 @@ kver="${kver%%___*}"
 # may stay on the old blake2s_state API even on 6.18+
 if grep -q 'struct blake2s_ctx' "${kbuilddir}/include/crypto/blake2s.h" 2>/dev/null; then
     echo "Applying blake2s patch for kernel $kver (new blake2s API detected)"
-    patch -p1 < ./blake2s.patch
+    patch -p1 < ./patches/blake2s.patch
 else
     echo "Skipping blake2s patch for kernel $kver (old blake2s API or headers not found)"
 fi
