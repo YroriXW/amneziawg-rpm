@@ -48,7 +48,7 @@ jobs:
           rm -rf dkms.conf
           cat > dkms.conf << EOF
           PACKAGE_NAME="amneziawg"
-          PACKAGE_VERSION="${{ steps.version.outputs.upstream_tools }}"
+          PACKAGE_VERSION="${{ steps.version.outputs.upstream }}"
           AUTOINSTALL=yes
           
           BUILT_MODULE_NAME="amneziawg"

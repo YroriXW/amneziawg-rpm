@@ -3,7 +3,7 @@
 
 Name:           amneziawg-kmod
 Version:        1.0.20260210
-Release:        4%{?dist}
+Release:        5%{?dist}
 URL:            https://github.com/amnezia-vpn/amneziawg-linux-kernel-module
 Summary:        Fast, modern, secure VPN tunnel
 License:        GPL-2.0-only
@@ -35,24 +35,19 @@ kmodtool --target %{_target_cpu} --kmodname %{name} %{?buildforkernels:--%{build
 %autosetup -c -N
 
 pushd %{name}
-
 kver=%{?kernel_versions}
 kbuilddir="${kver##*___}"
 kver="${kver%%___*}"
-# Check actual kernel API rather than version: xanmod and similar forks
-# may stay on the old blake2s_state API even on 6.18+
-if grep -q 'struct blake2s_ctx' "${kbuilddir}/include/crypto/blake2s.h" 2>/dev/null; then
-    echo "Applying blake2s patch for kernel $kver (new blake2s API detected)"
+# Patch needed only on 6.19+: that's when blake2s_ctx (new API) was introduced
+kver_major=$(echo "$kver" | cut -d. -f1)
+kver_minor=$(echo "$kver" | cut -d. -f2)
+if [ "$kver_major" -gt 6 ] || { [ "$kver_major" -eq 6 ] && [ "$kver_minor" -ge 19 ]; }; then
+    echo "Applying blake2s patch for kernel $kver (>= 6.19, new blake2s API)"
     patch -p1 < ./patches/blake2s.patch
 else
-    echo "Skipping blake2s patch for kernel $kver (old blake2s API or headers not found)"
+    echo "Skipping blake2s patch for kernel $kver (< 6.19, old blake2s API)"
 fi
-
 popd
-
-for kernel_version in %{?kernel_versions} ; do
-    cp -a %{name} _kmod_build_${kernel_version%%___*}
-done
 
 %build
 for kernel_version in %{?kernel_versions}; do
@@ -74,6 +69,8 @@ fi
 %{?akmod_install}
 
 %changelog
+* Wed Mar 6 2026 Oleg YroriXW <olegyrori@gmail.com> - 1.0.20260210-5
+- Fix links, copyrights, typos and simplify logic of applying blake2s patch
 * Wed Mar 5 2026 Oleg YroriXW <olegyrori@gmail.com> - 1.0.20260210-4
 - Introduced smart check for blake2s patching, properly building deb
 * Wed Mar 4 2026 Oleg YroriXW <olegyrori@gmail.com> - 1.0.20260210-3
