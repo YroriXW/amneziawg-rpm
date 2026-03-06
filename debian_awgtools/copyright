@@ -4,7 +4,7 @@ Source: https://github.com/amnezia-vpn/amneziawg-tools
 Upstream-Contact: AmneziaVPN <admin@amnezia.org>
 
 Files: *
-Copyright: 2015-2020 Jason A. Donenfeld <Jason@zx2c4.com>, AmneziaVPN modifications <admin@amnezia.org>
+Copyright: 2015-2020 Jason A. Donenfeld <Jason@zx2c4.com>, 2024-2026 AmneziaVPN <admin@amnezia.org>
 License: GPL-2
 
 Files: contrib/external-tests/python/main.py

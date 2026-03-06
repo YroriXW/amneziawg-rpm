@@ -19,10 +19,6 @@ Files: debian/patches/fixmemleakinjpspecsetup.patch
 Copyright: 2026 Kirill Turanskiy <kt@novamedia.ru>
 License: GPL-2
 
-Files: debian/patches/fixversion.patch
-Copyright: 2026 Oleg YroriXW <olegyrori@gmail.com>
-License: GPL-2
-
 License: GPL-2
  This package is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
