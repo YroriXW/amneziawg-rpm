@@ -47,7 +47,11 @@ jobs:
           sed -i "s/^Version:.*/Version: ${UPSTREAM_TOOLS}/" amneziawg-tools.spec
           sed -i "s/^Release:.*/Release: ${RELEASE}%{?dist}/" amneziawg-tools.spec
           sed -i "s|/download/v[^/]*/amneziawg-tools|/download/v${UPSTREAM}-%{release}/amneziawg-tools|" amneziawg-tools.spec
-          
+
+          bash gen_debseries.sh \
+            patches/automatic/kmod  debian/patches/series \
+            patches/automatic/tools debian_awgtools/patches/series
+              
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add CHANGELOG debian/changelog debian_awgtools/changelog \
@@ -82,15 +86,19 @@ jobs:
           EOF
           cd ../../
 
+          sed -i "s/#define WIREGUARD_VERSION \".*\"/#define WIREGUARD_VERSION \"${{ steps.version.outputs.upstream }}\"/" \
+                amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/src/version.h
+          sed -i "s/#define WIREGUARD_VERSION \".*\"/#define WIREGUARD_VERSION \"${{ steps.version.outputs.upstream_tools }}\"/" \
+                amneziawg-tools-${{ steps.version.outputs.upstream_tools }}/src/version.h
           
-          cp -r blake2sintegrationMakefile.patch fixmemleakinjpspecsetup.patch fixversionkernel.patch debian/patches
+          cp -r patches/automatic/kmod/*.patch debian/patches
           cp -r debian amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/
-          cd amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }} && export QUILT_PATCHES=debian/patches && quilt push -a && rm -rf .pc && cd ../
+          cd amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }} && export QUILT_PATCHES=debian/patches && quilt push -a || true && rm -rf .pc && cd ../
 
           mkdir -p amneziawg-linux-kmod_${{ steps.version.outputs.upstream }}/patches
           rm -rf amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/debian/patches       
           cp -r amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/src/* amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/COPYING pre-build.sh amneziawg-linux-kmod_${{ steps.version.outputs.upstream }}/
-          cp -r blake2s.patch amneziawg-linux-kmod_${{ steps.version.outputs.upstream }}/patches/
+          cp -r patches/special/kmod/*.patch amneziawg-linux-kmod_${{ steps.version.outputs.upstream }}/patches/
           tar -czvf amneziawg-linux-kmod_${{ steps.version.outputs.upstream }}.orig.tar.gz amneziawg-linux-kmod_${{ steps.version.outputs.upstream }}
           cp -r amneziawg-linux-kmod_${{ steps.version.outputs.upstream }} amneziawg-kmod
           tar -czvf amneziawg-kmod.tar.gz amneziawg-kmod
@@ -99,9 +107,9 @@ jobs:
           mv amneziawg-linux-kmod_${{ steps.version.outputs.upstream }}-${{ steps.version.outputs.release }}.debian.tar.gz ../
           cd ../
 
-          cp -r fixversiontools.patch debian_awgtools/patches/
+          cp -r patches/automatic/tools/*.patch debian_awgtools/patches/
           cp -r debian_awgtools amneziawg-tools-${{ steps.version.outputs.upstream_tools }}/debian
-          cd amneziawg-tools-${{ steps.version.outputs.upstream_tools }} && export QUILT_PATCHES=debian/patches && quilt push -a && rm -rf .pc && cd ../
+          cd amneziawg-tools-${{ steps.version.outputs.upstream_tools }} && export QUILT_PATCHES=debian/patches && quilt push -a || true && rm -rf .pc && cd ../
           
           mkdir amneziawg_${{ steps.version.outputs.upstream_tools }}
           rm -rf amneziawg-tools-${{ steps.version.outputs.upstream_tools }}/debian/patches       

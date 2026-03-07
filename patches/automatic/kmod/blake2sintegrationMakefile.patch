@@ -6,7 +6,7 @@ index cdcb94a..6abd8e0 100644
  
  rwildcard=$(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
  DKMS_SOURCES := version.h Makefile Kbuild Kconfig dkms.conf $(filter-out version.h wireguard.mod.c tests/%,$(call rwildcard,,*.c *.h *.S *.pl *.include))
-+DKMS_PATCHES := patches/blake2s.patch
++DKMS_PATCHES := $(wildcard patches/*.patch)
 +
  dkms-install: $(DKMS_SOURCES)
  	@$(foreach f,$(DKMS_SOURCES),install -v -m0644 -D $(f) $(DESTDIR)$(DKMSDIR)/$(f);)
