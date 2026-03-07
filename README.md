@@ -1,4 +1,5 @@
 # Unofficial [AmneziaWG](https://amnezia.org) builds
+[![build result](https://build.opensuse.org/projects/home:YroriXW/packages/amneziawg/badge.svg?type=default)](https://build.opensuse.org/package/show/home:YroriXW/amneziawg)
 
 ## Description
 
