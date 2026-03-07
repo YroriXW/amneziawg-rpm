@@ -9,6 +9,7 @@ update_series() {
     return
   fi
 
+  mkdir -p "$(dirname "$series")"   # ← вот это
   touch "$series"
 
   for patch in "$src_dir"/*.patch; do
@@ -21,8 +22,6 @@ update_series() {
 }
 
 while [[ $# -gt 0 ]]; do
-  src_dir="$1"
-  series="$2"
+  update_series "$1" "$2"
   shift 2
-  update_series "$src_dir" "$series"
 done

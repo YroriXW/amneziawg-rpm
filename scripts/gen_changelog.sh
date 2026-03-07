@@ -121,13 +121,13 @@ echo "=== debian_awgtools/changelog (amneziawg) ==="
 gen_deb_changelog "amneziawg" "$UPSTREAM_TOOLS" "debian_awgtools/changelog"
 
 echo "=== amneziawg-kmod.spec ==="
-gen_rpm_changelog "$UPSTREAM_KMOD" "amneziawg-kmod.spec"
+gen_rpm_changelog "$UPSTREAM_KMOD" "specs/amneziawg-kmod.spec"
 
 echo "=== amneziawg-tools.spec ==="
-gen_rpm_changelog "$UPSTREAM_TOOLS" "amneziawg-tools.spec"
+gen_rpm_changelog "$UPSTREAM_TOOLS" "specs/amneziawg-tools.spec"
 
 echo "=== amneziawg.spec ==="
-gen_rpm_changelog "$UPSTREAM_KMOD" "amneziawg.spec"
+gen_rpm_changelog "$UPSTREAM_KMOD" "specs/amneziawg.spec"
 
 echo ""
 echo "Done."
