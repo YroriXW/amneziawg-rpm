@@ -49,7 +49,7 @@ jobs:
           sed -i "s|/download/v[^/]*/amneziawg-tools|/download/v${UPSTREAM}-%{release}/amneziawg-tools|" specs/amneziawg-tools.spec
 
           bash scripts/gen_debseries.sh  patches/automatic/kmod  debian/patches/series 
-#          bash scripts/gen_debseries.sh  patches/automatic/tools debian_awgtools/patches/series
+          # bash scripts/gen_debseries.sh  patches/automatic/tools debian_awgtools/patches/series
               
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -106,9 +106,9 @@ jobs:
           mv amneziawg-linux-kmod_${{ steps.version.outputs.upstream }}-${{ steps.version.outputs.release }}.debian.tar.gz ../
           cd ../
 
-#          cp -r patches/automatic/tools/*.patch debian_awgtools/patches/ || true
-#          cp -r debian_awgtools amneziawg-tools-${{ steps.version.outputs.upstream_tools }}/debian
-#          cd amneziawg-tools-${{ steps.version.outputs.upstream_tools }} && export QUILT_PATCHES=debian/patches && quilt push -a || true && rm -rf .pc && cd ../
+          # cp -r patches/automatic/tools/*.patch debian_awgtools/patches/ || true
+          # cp -r debian_awgtools amneziawg-tools-${{ steps.version.outputs.upstream_tools }}/debian
+          # cd amneziawg-tools-${{ steps.version.outputs.upstream_tools }} && export QUILT_PATCHES=debian/patches && quilt push -a || true && rm -rf .pc && cd ../
           
           mkdir amneziawg_${{ steps.version.outputs.upstream_tools }}
           rm -rf amneziawg-tools-${{ steps.version.outputs.upstream_tools }}/debian/patches       
