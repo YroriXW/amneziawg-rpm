@@ -30,6 +30,31 @@ jobs:
           echo "upstream_tools=$UPSTREAM_TOOLS" >> $GITHUB_OUTPUT
           echo "release=$RELEASE" >> $GITHUB_OUTPUT
 
+      - name: Generate and commit changelogs
+        env:
+          UPSTREAM: ${{ steps.version.outputs.upstream }}
+          UPSTREAM_TOOLS: ${{ steps.version.outputs.upstream_tools }}
+          RELEASE: ${{ steps.version.outputs.release }}
+        run: |
+          bash gen-changelog.sh \
+            "${UPSTREAM}" "${UPSTREAM_TOOLS}" \
+            "Oleg YroriXW" "olegyrori@gmail.com"
+
+          sed -i "s/^Version:.*/Version: ${UPSTREAM}/" amneziawg-kmod.spec
+          sed -i "s/^Release:.*/Release: ${RELEASE}%{?dist}/" amneziawg-kmod.spec
+          sed -i "s/^Version:.*/Version: ${UPSTREAM}/" amneziawg.spec
+          sed -i "s/^Release:.*/Release: ${RELEASE}%{?dist}/" amneziawg.spec
+          sed -i "s/^Version:.*/Version: ${UPSTREAM_TOOLS}/" amneziawg-tools.spec
+          sed -i "s/^Release:.*/Release: ${RELEASE}%{?dist}/" amneziawg-tools.spec
+          sed -i "s|/download/v[^/]*/amneziawg-tools|/download/v${UPSTREAM}-%{release}/amneziawg-tools|" amneziawg-tools.spec
+          
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add CHANGELOG debian/changelog debian_awgtools/changelog \
+                  amneziawg-kmod.spec amneziawg-tools.spec amneziawg.spec
+          git diff --cached --quiet || git commit -m "chore: update changelogs for v${UPSTREAM}-${RELEASE}"
+          git push
+
       - name: Download upstream source
         run: |
           wget -O source.tar.gz \
@@ -52,7 +77,7 @@ jobs:
           AUTOINSTALL=yes
           
           BUILT_MODULE_NAME="amneziawg"
-          DEST_MODULE_LOCATION="/kernel/drivers/net/wireguard"
+          DEST_MODULE_LOCATION="/kernel/drivers/net/amneziawg"
           PRE_BUILD="pre-build.sh"
           EOF
           cd ../../
@@ -186,3 +211,167 @@ jobs:
             amneziawg-kmod.spec
             amneziawg-tools.spec
             amneziawg.spec
+
+      - name: Update OBS _service via osc
+        env:
+          OBS_USERNAME: ${{ secrets.OBS_USERNAME }}
+          OBS_PASSWORD: ${{ secrets.OBS_PASSWORD }}
+          OBS_PROJECT: ${{ secrets.OBS_PROJECT }}
+          OBS_PACKAGE: ${{ secrets.OBS_PACKAGE }}
+          UPSTREAM: ${{ steps.version.outputs.upstream }}
+          UPSTREAM_TOOLS: ${{ steps.version.outputs.upstream_tools }}
+          RELEASE: ${{ steps.version.outputs.release }}
+        run: |
+          mkdir -p ~/.config/osc
+          cat > ~/.config/osc/oscrc << EOF
+          [general]
+          apiurl = https://api.opensuse.org
+
+          [https://api.opensuse.org]
+          user = ${OBS_USERNAME}
+          pass = ${OBS_PASSWORD}
+          EOF
+
+          SHA_KMOD_TAR=$(sha256sum amneziawg-kmod.tar.gz | cut -d ' ' -f1)
+          SHA_KMOD_DSC=$(sha256sum amneziawg-kmod.dsc | cut -d ' ' -f1)
+          SHA_TOOLS_TAR=$(sha256sum amneziawg-tools.tar.gz | cut -d ' ' -f1)
+          SHA_TOOLS_DSC=$(sha256sum amneziawg-tools.dsc | cut -d ' ' -f1)
+          SHA_AWG_DSC=$(sha256sum amneziawg.dsc | cut -d ' ' -f1)
+          SHA_AWG_SPEC=$(sha256sum amneziawg.spec | cut -d ' ' -f1)
+          SHA_KMOD_SPEC=$(sha256sum amneziawg-kmod.spec | cut -d ' ' -f1)
+          SHA_TOOLS_SPEC=$(sha256sum amneziawg-tools.spec | cut -d ' ' -f1)
+          SHA_KMOD_ORIG=$(sha256sum amneziawg-linux-kmod_${UPSTREAM}.orig.tar.gz | cut -d ' ' -f1)
+          SHA_KMOD_DEB=$(sha256sum amneziawg-linux-kmod_${UPSTREAM}-${RELEASE}.debian.tar.gz | cut -d ' ' -f1)
+          SHA_AWG_ORIG=$(sha256sum amneziawg_${UPSTREAM_TOOLS}.orig.tar.gz | cut -d ' ' -f1)
+          SHA_AWG_DEB=$(sha256sum amneziawg_${UPSTREAM_TOOLS}-${RELEASE}.debian.tar.gz | cut -d ' ' -f1)
+
+          osc co ${OBS_PROJECT} ${OBS_PACKAGE}
+          cd ${OBS_PROJECT}/${OBS_PACKAGE}
+
+          cat > _service << EOF
+          <services>
+            <service name="download_url">
+              <param name="protocol">https</param>
+              <param name="host">github.com</param>
+              <param name="path">/YroriXW/amneziawg/releases/latest/download/amneziawg-kmod.tar.gz</param>
+            </service>
+            <service name="download_url">
+              <param name="protocol">https</param>
+              <param name="host">github.com</param>
+              <param name="path">/YroriXW/amneziawg/releases/latest/download/amneziawg-kmod.dsc</param>
+            </service>
+            <service name="download_url">
+              <param name="protocol">https</param>
+              <param name="host">github.com</param>
+              <param name="path">/YroriXW/amneziawg/releases/latest/download/amneziawg-tools.dsc</param>
+            </service>
+            <service name="download_url">
+              <param name="protocol">https</param>
+              <param name="host">github.com</param>
+              <param name="path">/YroriXW/amneziawg/releases/latest/download/amneziawg-tools.tar.gz</param>
+            </service>
+            <service name="download_url">
+              <param name="protocol">https</param>
+              <param name="host">github.com</param>
+              <param name="path">/YroriXW/amneziawg/releases/latest/download/amneziawg.dsc</param>
+            </service>
+            <service name="download_url">
+              <param name="protocol">https</param>
+              <param name="host">github.com</param>
+              <param name="path">/YroriXW/amneziawg/releases/latest/download/amneziawg-linux-kmod_${UPSTREAM}.orig.tar.gz</param>
+            </service>
+            <service name="download_url">
+              <param name="protocol">https</param>
+              <param name="host">github.com</param>
+              <param name="path">/YroriXW/amneziawg/releases/latest/download/amneziawg-linux-kmod_${UPSTREAM}-${RELEASE}.debian.tar.gz</param>
+            </service>
+            <service name="download_url">
+              <param name="protocol">https</param>
+              <param name="host">github.com</param>
+              <param name="path">/YroriXW/amneziawg/releases/latest/download/amneziawg_${UPSTREAM_TOOLS}.orig.tar.gz</param>
+            </service>
+            <service name="download_url">
+              <param name="protocol">https</param>
+              <param name="host">github.com</param>
+              <param name="path">/YroriXW/amneziawg/releases/latest/download/amneziawg_${UPSTREAM_TOOLS}-${RELEASE}.debian.tar.gz</param>
+            </service>
+            <service name="download_url">
+              <param name="protocol">https</param>
+              <param name="host">github.com</param>
+              <param name="path">/YroriXW/amneziawg/releases/latest/download/amneziawg.spec</param>
+            </service>
+            <service name="download_url">
+              <param name="protocol">https</param>
+              <param name="host">github.com</param>
+              <param name="path">/YroriXW/amneziawg/releases/latest/download/amneziawg-kmod.spec</param>
+            </service>
+            <service name="download_url">
+              <param name="protocol">https</param>
+              <param name="host">github.com</param>
+              <param name="path">/YroriXW/amneziawg/releases/latest/download/amneziawg-tools.spec</param>
+            </service>
+
+            <service name="verify_file">
+              <param name="file">_service:download_url:amneziawg-kmod.tar.gz</param>
+              <param name="verifier">sha256</param>
+              <param name="checksum">${SHA_KMOD_TAR}</param>
+            </service>
+            <service name="verify_file">
+              <param name="file">_service:download_url:amneziawg-kmod.dsc</param>
+              <param name="verifier">sha256</param>
+              <param name="checksum">${SHA_KMOD_DSC}</param>
+            </service>
+            <service name="verify_file">
+              <param name="file">_service:download_url:amneziawg-linux-kmod_${UPSTREAM}-${RELEASE}.debian.tar.gz</param>
+              <param name="verifier">sha256</param>
+              <param name="checksum">${SHA_KMOD_DEB}</param>
+            </service>
+            <service name="verify_file">
+              <param name="file">_service:download_url:amneziawg-linux-kmod_${UPSTREAM}.orig.tar.gz</param>
+              <param name="verifier">sha256</param>
+              <param name="checksum">${SHA_KMOD_ORIG}</param>
+            </service>
+            <service name="verify_file">
+              <param name="file">_service:download_url:amneziawg-tools.dsc</param>
+              <param name="verifier">sha256</param>
+              <param name="checksum">${SHA_TOOLS_DSC}</param>
+            </service>
+            <service name="verify_file">
+              <param name="file">_service:download_url:amneziawg-tools.tar.gz</param>
+              <param name="verifier">sha256</param>
+              <param name="checksum">${SHA_TOOLS_TAR}</param>
+            </service>
+            <service name="verify_file">
+              <param name="file">_service:download_url:amneziawg.dsc</param>
+              <param name="verifier">sha256</param>
+              <param name="checksum">${SHA_AWG_DSC}</param>
+            </service>
+            <service name="verify_file">
+              <param name="file">_service:download_url:amneziawg_${UPSTREAM_TOOLS}-${RELEASE}.debian.tar.gz</param>
+              <param name="verifier">sha256</param>
+              <param name="checksum">${SHA_AWG_DEB}</param>
+            </service>
+            <service name="verify_file">
+              <param name="file">_service:download_url:amneziawg_${UPSTREAM_TOOLS}.orig.tar.gz</param>
+              <param name="verifier">sha256</param>
+              <param name="checksum">${SHA_AWG_ORIG}</param>
+            </service>
+            <service name="verify_file">
+              <param name="file">_service:download_url:amneziawg.spec</param>
+              <param name="verifier">sha256</param>
+              <param name="checksum">${SHA_AWG_SPEC}</param>
+            </service>
+            <service name="verify_file">
+              <param name="file">_service:download_url:amneziawg-kmod.spec</param>
+              <param name="verifier">sha256</param>
+              <param name="checksum">${SHA_KMOD_SPEC}</param>
+            </service>
+            <service name="verify_file">
+              <param name="file">_service:download_url:amneziawg-tools.spec</param>
+              <param name="verifier">sha256</param>
+              <param name="checksum">${SHA_TOOLS_SPEC}</param>
+            </service>
+          </services>
+          EOF
+          osc ci -m "CI update: v${UPSTREAM}-${RELEASE}"
+          osc rebuild ${OBS_PROJECT} ${OBS_PACKAGE} && osc rebuild ${OBS_PROJECT} ${OBS_PACKAGE} -M ${OBS_PACKAGE}-kmod && osc rebuild ${OBS_PROJECT} ${OBS_PACKAGE} -M ${OBS_PACKAGE}-tools

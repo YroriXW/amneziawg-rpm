@@ -1,0 +1,7 @@
+-7 | Sat, 07 Mar 2026 17:11:00 +0300 | Automations
+-6 | Sat, 07 Mar 2026 11:11:00 +0300 | Unified changelog for deb based distros
+-5 | Fri, 06 Mar 2026 11:11:00 +0300 | Fix links, copyrights, typos; Simplify logic of applying blake2s patch
+-4 | Thu, 05 Mar 2026 11:11:00 +0300 | Introduced smart check for blake2s patching; Properly building deb
+-3 | Wed, 04 Mar 2026 11:11:00 +0300 | Added debian builds; Patches applying in CI now
+-2 | Sun, 01 Mar 2026 11:11:00 +0300 | Added patch for memory leak, blake2s, version string
+-1 | Sat, 28 Feb 2026 11:11:00 +0300 | Initial build
