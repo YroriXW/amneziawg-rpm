@@ -48,9 +48,8 @@ jobs:
           sed -i "s/^Release:.*/Release: ${RELEASE}%{?dist}/" specs/amneziawg-tools.spec
           sed -i "s|/download/v[^/]*/amneziawg-tools|/download/v${UPSTREAM}-%{release}/amneziawg-tools|" specs/amneziawg-tools.spec
 
-          bash scripts/gen_debseries.sh \
-            patches/automatic/kmod  debian/patches/series \
-            patches/automatic/tools debian_awgtools/patches/series
+          bash scripts/gen_debseries.sh  patches/automatic/kmod  debian/patches/series 
+          bash scripts/gen_debseries.sh  patches/automatic/tools debian_awgtools/patches/series
               
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
