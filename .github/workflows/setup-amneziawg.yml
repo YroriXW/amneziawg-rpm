@@ -36,26 +36,26 @@ jobs:
           UPSTREAM_TOOLS: ${{ steps.version.outputs.upstream_tools }}
           RELEASE: ${{ steps.version.outputs.release }}
         run: |
-          bash gen_changelog.sh \
+          bash scripts/gen_changelog.sh \
             "${UPSTREAM}" "${UPSTREAM_TOOLS}" \
             "Oleg YroriXW" "olegyrori@gmail.com"
 
-          sed -i "s/^Version:.*/Version: ${UPSTREAM}/" amneziawg-kmod.spec
-          sed -i "s/^Release:.*/Release: ${RELEASE}%{?dist}/" amneziawg-kmod.spec
-          sed -i "s/^Version:.*/Version: ${UPSTREAM}/" amneziawg.spec
-          sed -i "s/^Release:.*/Release: ${RELEASE}%{?dist}/" amneziawg.spec
-          sed -i "s/^Version:.*/Version: ${UPSTREAM_TOOLS}/" amneziawg-tools.spec
-          sed -i "s/^Release:.*/Release: ${RELEASE}%{?dist}/" amneziawg-tools.spec
-          sed -i "s|/download/v[^/]*/amneziawg-tools|/download/v${UPSTREAM}-%{release}/amneziawg-tools|" amneziawg-tools.spec
+          sed -i "s/^Version:.*/Version: ${UPSTREAM}/" specs/amneziawg-kmod.spec
+          sed -i "s/^Release:.*/Release: ${RELEASE}%{?dist}/" specs/amneziawg-kmod.spec
+          sed -i "s/^Version:.*/Version: ${UPSTREAM}/" specs/amneziawg.spec
+          sed -i "s/^Release:.*/Release: ${RELEASE}%{?dist}/" specs/amneziawg.spec
+          sed -i "s/^Version:.*/Version: ${UPSTREAM_TOOLS}/" specs/amneziawg-tools.spec
+          sed -i "s/^Release:.*/Release: ${RELEASE}%{?dist}/" specs/amneziawg-tools.spec
+          sed -i "s|/download/v[^/]*/amneziawg-tools|/download/v${UPSTREAM}-%{release}/amneziawg-tools|" specs/amneziawg-tools.spec
 
-          bash gen_debseries.sh \
+          bash scripts/gen_debseries.sh \
             patches/automatic/kmod  debian/patches/series \
             patches/automatic/tools debian_awgtools/patches/series
               
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add CHANGELOG debian/changelog debian_awgtools/changelog \
-                  amneziawg-kmod.spec amneziawg-tools.spec amneziawg.spec
+                  specs/amneziawg-kmod.spec specs/amneziawg-tools.spec specs/amneziawg.spec
           git diff --cached --quiet || git commit -m "chore: update changelogs for v${UPSTREAM}-${RELEASE}"
           git push origin HEAD:main
 
@@ -97,7 +97,7 @@ jobs:
 
           mkdir -p amneziawg-linux-kmod_${{ steps.version.outputs.upstream }}/patches
           rm -rf amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/debian/patches       
-          cp -r amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/src/* amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/COPYING pre-build.sh amneziawg-linux-kmod_${{ steps.version.outputs.upstream }}/
+          cp -r amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/src/* amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/COPYING dkms/* amneziawg-linux-kmod_${{ steps.version.outputs.upstream }}/
           cp -r patches/special/kmod/*.patch amneziawg-linux-kmod_${{ steps.version.outputs.upstream }}/patches/ || true
           tar -czvf amneziawg-linux-kmod_${{ steps.version.outputs.upstream }}.orig.tar.gz amneziawg-linux-kmod_${{ steps.version.outputs.upstream }}
           cp -r amneziawg-linux-kmod_${{ steps.version.outputs.upstream }} amneziawg-kmod
@@ -216,9 +216,9 @@ jobs:
             amneziawg-kmod.dsc
             amneziawg-tools.dsc
             amneziawg.dsc
-            amneziawg-kmod.spec
-            amneziawg-tools.spec
-            amneziawg.spec
+            specs/amneziawg-kmod.spec
+            specs/amneziawg-tools.spec
+            specs/amneziawg.spec
 
       - name: Update OBS _service via osc
         env:
@@ -245,9 +245,9 @@ jobs:
           SHA_TOOLS_TAR=$(sha256sum amneziawg-tools.tar.gz | cut -d ' ' -f1)
           SHA_TOOLS_DSC=$(sha256sum amneziawg-tools.dsc | cut -d ' ' -f1)
           SHA_AWG_DSC=$(sha256sum amneziawg.dsc | cut -d ' ' -f1)
-          SHA_AWG_SPEC=$(sha256sum amneziawg.spec | cut -d ' ' -f1)
-          SHA_KMOD_SPEC=$(sha256sum amneziawg-kmod.spec | cut -d ' ' -f1)
-          SHA_TOOLS_SPEC=$(sha256sum amneziawg-tools.spec | cut -d ' ' -f1)
+          SHA_AWG_SPEC=$(sha256sum specs/amneziawg.spec | cut -d ' ' -f1)
+          SHA_KMOD_SPEC=$(sha256sum specs/amneziawg-kmod.spec | cut -d ' ' -f1)
+          SHA_TOOLS_SPEC=$(sha256sum specs/amneziawg-tools.spec | cut -d ' ' -f1)
           SHA_KMOD_ORIG=$(sha256sum amneziawg-linux-kmod_${UPSTREAM}.orig.tar.gz | cut -d ' ' -f1)
           SHA_KMOD_DEB=$(sha256sum amneziawg-linux-kmod_${UPSTREAM}-${RELEASE}.debian.tar.gz | cut -d ' ' -f1)
           SHA_AWG_ORIG=$(sha256sum amneziawg_${UPSTREAM_TOOLS}.orig.tar.gz | cut -d ' ' -f1)
