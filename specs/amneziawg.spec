@@ -2,7 +2,7 @@
 
 Name:           amneziawg
 Version: 1.0.20260210
-Release: 12%{?dist}
+Release: 13%{?dist}
 Summary:        Fast, modern, secure VPN tunnel
 License:        GPL-2.0-only
 URL:            https://github.com/YroriXW/amneziawg
@@ -18,6 +18,9 @@ Common package for AmneziaWG
 %files
 
 %changelog
+* Sat Mar 07 2026 Oleg YroriXW <olegyrori@gmail.com> - 1.0.20260210-13
+- rewrite debseries script
+
 * Sat Mar 07 2026 Oleg YroriXW <olegyrori@gmail.com> - 1.0.20260210-12
 - fixed changelog and debseries scripts
 
