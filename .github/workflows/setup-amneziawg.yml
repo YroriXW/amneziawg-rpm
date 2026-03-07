@@ -88,7 +88,7 @@ jobs:
 
           sed -i "s/#define WIREGUARD_VERSION \".*\"/#define WIREGUARD_VERSION \"${{ steps.version.outputs.upstream }}\"/" \
                 amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/src/version.h
-          sed -i "s/#define WIREGUARD_VERSION \".*\"/#define WIREGUARD_VERSION \"${{ steps.version.outputs.upstream_tools }}\"/" \
+          sed -i "s/#define WIREGUARD_TOOLS_VERSION \".*\"/#define WIREGUARD_TOOLS_VERSION \"${{ steps.version.outputs.upstream_tools }}\"/" \
                 amneziawg-tools-${{ steps.version.outputs.upstream_tools }}/src/version.h
           
           cp -r patches/automatic/kmod/*.patch debian/patches || true
