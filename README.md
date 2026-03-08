@@ -9,10 +9,12 @@ a WireGuard fork with advanced traffic obfuscation (H1–H4, I1–I5, junk packe
 This is **unofficial** builds. The original project is developed by the [Amnezia VPN](https://amnezia.org) team.
 
 Builds are available for:
-- **Debian** (12, 13)
-- **Ubuntu** (22.04, 24.04, 25.10)
-- **Fedora** (42, 43)
-- **EPEL** (9, 10)
+- **Debian** x86_64 and arm64 (12, 13)
+- **Ubuntu** x86_64 and arm64 (22.04, 24.04, 25.10)
+- **Fedora** x86_64 and arm64 (42, 43)
+- **EPEL** x86_64 and arm64 (9, 10)  
+
+arm64 has not been tested
 
 via [my OBS repository](https://build.opensuse.org/package/show/home:YroriXW/amneziawg).
 
