@@ -3,7 +3,7 @@
 
 Name:           amneziawg-kmod
 Version: 1.0.20260210
-Release: 13%{?dist}
+Release: 14%{?dist}
 URL:            https://github.com/amnezia-vpn/amneziawg-linux-kernel-module
 Summary:        Fast, modern, secure VPN tunnel
 License:        GPL-2.0-only
@@ -75,6 +75,9 @@ fi
 %{?akmod_install}
 
 %changelog
+* Mon Mar 09 2026 Oleg YroriXW <olegyrori@gmail.com> - 1.0.20260210-14
+- add patch to the dependencies
+
 * Sat Mar 07 2026 Oleg YroriXW <olegyrori@gmail.com> - 1.0.20260210-13
 - rewrite debseries script
 
