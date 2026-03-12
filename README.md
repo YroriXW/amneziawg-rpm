@@ -14,15 +14,15 @@ Builds are available for:
 - **Fedora** x86_64 and arm64 (42, 43)
 - **RHEL-compatible (EPEL)** x86_64 and arm64 (9, 10)  
 
-**Note:** arm64 builds are provided but have not been tested.
+via [my OBS repository](https://build.opensuse.org/package/show/home:YroriXW/amneziawg).  
 
-via [my OBS repository](https://build.opensuse.org/package/show/home:YroriXW/amneziawg).
+**Note:** arm64 builds are provided but have not been tested.  
 
 ## Credits
 
 **Base projects**
 - [Amnezia VPN team](https://amnezia.org) and the entire [amnezia-vpn organization](https://github.com/amnezia-vpn) — for creating and maintaining AmneziaWG.
-- [WireGuard project](https://www.wireguard.com/) and its author **[Jason A. Donenfeld (zx2c4)](https://www.zx2c4.com/)** — AmneziaWG is a fork of the original WireGuard kernel module.
+- [WireGuard project](https://www.wireguard.com/) and its author **[Jason A. Donenfeld (zx2c4)](https://www.zx2c4.com/)** — AmneziaWG is a fork of the original WireGuard.
 
 **Patches & contributions**
 - [babiulep](https://github.com/babiulep) (main patch) and [zerkalica](https://github.com/zerkalica) ([arm fix](https://github.com/amnezia-vpn/amneziawg-linux-kernel-module/issues/138#issuecomment-3876984565)) for **[blake2s.patch](https://github.com/babiulep/my-kernel-patches/blob/main/AMNEZIAWG/blake2s.patch)**
