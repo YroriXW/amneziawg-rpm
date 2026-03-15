@@ -1,4 +1,5 @@
--14 | Sat, 09 Mar 2026 10:23:00 +0300 | add patch to the dependencies
+-15 | Sun, 15 Mar 2026 21:30:00 +0300 | correct description and docs of systemd units
+-14 | Mon, 09 Mar 2026 10:23:00 +0300 | add patch to the dependencies
 -13 | Sat, 07 Mar 2026 21:50:00 +0300 | rewrite debseries script
 -12 | Sat, 07 Mar 2026 21:11:00 +0300 | fixed changelog and debseries scripts
 -11 | Sat, 07 Mar 2026 19:11:00 +0300 | fixed amneziawg-tools env
