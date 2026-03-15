@@ -90,7 +90,14 @@ jobs:
                 amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/src/version.h
           sed -i "s/#define WIREGUARD_TOOLS_VERSION \".*\"/#define WIREGUARD_TOOLS_VERSION \"${{ steps.version.outputs.upstream_tools }}\"/" \
                 amneziawg-tools-${{ steps.version.outputs.upstream_tools }}/src/version.h
-          
+          sed -i 's/Description=WireGuard Tunnels via wg-quick(8)/Description=AmneziaWG Tunnels via awg-quick(8)/' amneziawg-tools-${{ steps.version.outputs.upstream_tools }}/src/systemd/wg-quick.target
+          sed -i \
+            -e 's/Description=WireGuard via wg-quick(8) for %I/Description=AmneziaWG via awg-quick(8) for %I/' \
+            -e 's|Documentation=https://www\.wireguard\.com/$|Documentation=https://docs.amnezia.org/documentation/amnezia-wg|' \
+            -e 's|Documentation=https://www\.wireguard\.com/quickstart/|Documentation=https://github.com/amnezia-vpn/amneziawg-tools|' \
+            -e 's|Documentation=https://git\.zx2c4\.com/wireguard-tools/about/src/man/wg-quick\.8|Documentation=https://github.com/amnezia-vpn/amneziawg-tools/raw/refs/heads/master/src/man/wg-quick.8|' \
+            -e 's|Documentation=https://git\.zx2c4\.com/wireguard-tools/about/src/man/wg\.8|Documentation=https://github.com/amnezia-vpn/amneziawg-tools/blob/master/src/man/wg.8|' \
+            'amneziawg-tools-${{ steps.version.outputs.upstream_tools }}/src/systemd/wg-quick@.service'
           cp -r patches/automatic/kmod/*.patch debian/patches || true
           cp -r debian amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }}/
           cd amneziawg-linux-kernel-module-${{ steps.version.outputs.upstream }} && export QUILT_PATCHES=debian/patches && quilt push -a || true && rm -rf .pc && cd ../
